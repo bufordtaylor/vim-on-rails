@@ -55,13 +55,9 @@ set nocompatible                      " just in case system-wide vimrc has set t
     Bundle "MarcWeber/vim-addon-mw-utils"
     Bundle "tomtom/tlib_vim"
     Bundle "honza/vim-snippets"
-    Bundle "garbas/vim-snipmate"
 
     " Glorious colorscheme
     Bundle 'nanotech/jellybeans.vim'
-
-    " Git integration
-    Bundle 'motemen/git-vim'
 
     " Tab list panel
     Bundle 'kien/tabman.vim'
@@ -113,7 +109,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
 
     " Python autocomplete
     " REQUIREMENTS: python package 'jedi', also in virtenvs
-    Bundle 'davidhalter/jedi-vim'
+    "Bundle 'davidhalter/jedi-vim'
     """ }}}
     """ Installing plguins the first time {{{
         if has_vundle == 0
@@ -300,9 +296,14 @@ set nocompatible                      " just in case system-wide vimrc has set t
         noremap <leader>y "+y
 
         " Split window management
-        nnoremap <leader>w <C-w>v<C-w>l
-        nnoremap <leader>W <C-w>s
+        nnoremap <leader>V <C-w>v<C-w>l
+        nnoremap <leader>H <C-w>s
         nnoremap <leader>n :new<CR>
+
+        " rails specific navigation used with rails.vim
+        nnoremap <leader>av :AV<CR>
+        nnoremap <leader>rv :RV<CR>
+        
 
         nnoremap <leader>s :w<CR>
         nnoremap <C-j> <C-w>j
@@ -388,7 +389,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
         noremap <Right> <Esc>:bn<CR>
 
         " Snipmate remapping
-        imap <tab> <C-r>=TriggerSnippet()<CR>
+        "imap <tab> <C-r>=TriggerSnippet()<CR>
     """ }}}
     """ Highlight characters past 79, toggle with <leader>h {{{
         nnoremap <leader>h :call ToggleOverLengthHighlight()<CR>
