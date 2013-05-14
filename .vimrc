@@ -48,13 +48,15 @@ set nocompatible                      " just in case system-wide vimrc has set t
 
     " Easy... motions... yeah.
     Bundle 'Lokaltog/vim-easymotion'
-    let g:EasyMotion_leader_key = '<Leader>'
+
+    " so we can copy/paste in tmux
+    Bundle 'bufordtaylor/pbcopy.vim.git'
 
     " Snippets like textmate
     " Dependencies
-    Bundle "MarcWeber/vim-addon-mw-utils"
-    Bundle "tomtom/tlib_vim"
-    Bundle "honza/vim-snippets"
+    "Bundle 'MarcWeber/vim-addon-mw-utils'
+    "Bundle 'tomtom/tlib_vim'
+    "Bundle 'honza/vim-snippets'
 
     " Glorious colorscheme
     Bundle 'nanotech/jellybeans.vim'
@@ -70,7 +72,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
     Bundle 'scrooloose/nerdtree'
 
     " Color text based on RGB, hex, colornames
-    Bundle 'ap/vim-css-color'
+    "Bundle 'ap/vim-css-color'
 
     " Autoclose (, " etc
     Bundle 'Townk/vim-autoclose'
@@ -84,32 +86,28 @@ set nocompatible                      " just in case system-wide vimrc has set t
     " Align your = etc.
     Bundle 'vim-scripts/Align'
 
+    " Ack my life, space left on the end is intentional
+    Bundle "ack.vim"
+
     " Simple compile/run binds
-    Bundle 'xuhdev/SingleCompile'
+    "Bundle 'xuhdev/SingleCompile'
 
     " Awesome syntax checker.
     " REQUIREMENTS: See :h Syntastic
-    Bundle 'scrooloose/syntastic'
+    "Bundle 'scrooloose/syntastic'
 
     " Functions, class data etc.
     " REQUIREMENTS: ctags
     Bundle 'majutsushi/tagbar'
-
-    " http://pastie.org
-    " REQUIREMENTS: ruby in $PATH (not vim compiled with +ruby)
-    "Bundle 'simmel/vim-pastie'
 
     " C/C++ autocomplete
     " REUIREMENTS: clang compiler
     Bundle 'Rip-Rip/clang_complete'
 
     " syntax for jquery and rails
-    Bundle "jQuery"
+    "Bundle "jQuery"
     Bundle 'tpope/vim-rails.git'
 
-    " Python autocomplete
-    " REQUIREMENTS: python package 'jedi', also in virtenvs
-    "Bundle 'davidhalter/jedi-vim'
     """ }}}
     """ Installing plguins the first time {{{
         if has_vundle == 0
@@ -134,10 +132,20 @@ set nocompatible                      " just in case system-wide vimrc has set t
         colors jellybeans                           " select colorscheme
         highlight Normal ctermbg=NONE               " use terminal background
         highlight nonText ctermbg=NONE              " use terminal background
-        au BufRead,BufNewFile *.txt set ft=sh       " opens .txt w/highlight
+        autocmd BufNewFile,BufRead *.txt,*.markdown,*.md setlocal ft=markdown colorcolumn=79
+        autocmd FileType rst setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 colorcolumn=79
     """ }}}
     """ Interface general {{{
-        set cursorline                              " hilight cursor line
+        set nocursorcolumn
+        set nocursorline
+        syntax sync minlines=256
+
+        " Remember cursor position
+        au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+
+        " save on losing focus
+        au FocusLost * :wa
+
         set more                                    " ---more--- like less
         set number                                  " line numbers
         set scrolloff=5                             " lines above/below cursor
@@ -151,7 +159,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
         set wildmode=longest,list                   " bash-like auto complete
         """ Encoding {{{
             " If you're having problems with Powerline glyphs you can force
-            " UTF-8 if your locale is something else. 
+            " UTF-8 if your locale is something else.
             " WARNING: this will affect encoding used when editing files!
             "
             " set encoding=utf-8                    " for Powerline glyphs
@@ -192,8 +200,6 @@ set nocompatible                      " just in case system-wide vimrc has set t
     set mouse=                                      " disable mouse
     set noshowmode                                  " hide mode in cmd-line
     set noexrc                                      " don't use other .*rc(s)
-    set nostartofline                               " no goto #1 char in line
-    set nowrap                                      " don't wrap lines
     set numberwidth=5                               " 99999 lines
     set ttymouse=xterm2                             " experimental
     set noswapfile                        " Turn off annoying swapfiles "
@@ -226,19 +232,17 @@ set nocompatible                      " just in case system-wide vimrc has set t
 """ Files {{{
     set autochdir                                   " always use curr. dir.
     set autoread                                    " refresh if changed
-    set backup                                      " backup curr file
-    set backupdir=$HOME/.vim/backup                 " backup director{y,ies}
-    set backupext=~                                 " append ~ to backups
-    set confirm                                     " confirm changed files
+    set nobackup                                      " backup curr file
+    "set confirm                                     " confirm changed files
     set noautowrite                                 " never autowrite
-    set updatecount=50                              " update swp after 50chars
+    "set updatecount=50                              " update swp after 50chars
     """ Persistent undo. Requires Vim 7.3 {{{
-        if has('persistent_undo') && exists("&undodir")
-            set undodir=$HOME/.vim/undo/            " where to store undofiles
-            set undofile                            " enable undofile
-            set undolevels=500                      " max undos stored
-            set undoreload=10000                    " buffer stored undos
-        endif
+        "if has('persistent_undo') && exists("&undodir")
+            "set undodir=$HOME/.vim/undo/            " where to store undofiles
+            "set undofile                            " enable undofile
+            "set undolevels=500                      " max undos stored
+            "set undoreload=10000                    " buffer stored undos
+        "endif
     """ }}}
 """ }}}
 """ Text formatting {{{
@@ -262,22 +266,37 @@ set nocompatible                      " just in case system-wide vimrc has set t
         " Remap <leader>
         let mapleader=","
 
+
+        " ack.vim
+        nnoremap <leader>a :Ack 
+
+        " rails.vim shortcuts
+        nnoremap <leader>av :AV<CR>
+        nnoremap <leader>rv :RV<CR>
+
         " Hide matches on <leader>space
         nnoremap <leader><space> :noh<cr>
-       
+
         " Remove trailing whitespace on <leader>S
         nnoremap <leader>S :%s/\s\+$//<cr>:let @/=''<CR>
+
+        " highlight bad whitespace
+        autocmd BufReadPost * match BadWhitespace /\s\+$/
+        autocmd InsertEnter * match BadWhitespace /\s\+\%#\@<!$/
+        autocmd InsertLeave * match BadWhitespace /\s\+$/
+        highlight BadWhitespace ctermbg=1
+
 
         nnoremap <leader>ev :e $MYVIMRC<CR>
         nnoremap <leader>sv :source $MYVIMRC<CR>
 
         " Copy/Paste to and from Desktop Environment
-        noremap <leader>yy "+y
-        noremap <leader>pp "+gP
-        
+        "noremap <leader>yy "+y
+        "noremap <leader>pp "+gP
+
         "" easy escape with jj
         inoremap jj <ESC>
-        
+
         " Quit window on <leader>q
         nnoremap <leader>q :q<CR>
         nnoremap <leader>Q :q!<CR>
@@ -293,17 +312,20 @@ set nocompatible                      " just in case system-wide vimrc has set t
         inoremap <down> <nop>
 
         " Yank(copy) to system clipboard
-        noremap <leader>y "+y
+        "noremap <leader>y "+y
+        set ttyfast
+        if $TMUX == ''
+            set clipboard+=unnamed
+        endif
+
+
 
         " Split window management
         nnoremap <leader>V <C-w>v<C-w>l
         nnoremap <leader>H <C-w>s
         nnoremap <leader>n :new<CR>
 
-        " rails specific navigation used with rails.vim
-        nnoremap <leader>av :AV<CR>
-        nnoremap <leader>rv :RV<CR>
-        
+
 
         nnoremap <leader>s :w<CR>
         nnoremap <C-j> <C-w>j
@@ -313,7 +335,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
         nnoremap ; :
 
         " Toggle text wrapping
-        nmap <silent> <leader>ww :set invwrap<CR>:set wrap?<CR> 
+        nmap <silent> <leader>ww :set invwrap<CR>:set wrap?<CR>
 
         " Toggle folding
         nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
@@ -344,7 +366,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
         inoremap <F1> <ESC>
         nnoremap <F1> <ESC>
         vnoremap <F1> <ESC>
-        
+
         " Toggle syntax highlight
         map <F7> :if exists("syntax_on")
             \<Bar>syntax off<Bar>else<Bar>syntax enable<Bar>endif<CR>
@@ -368,8 +390,8 @@ set nocompatible                      " just in case system-wide vimrc has set t
         nmap <F10> :SCCompileRun<CR>
 
         " Syntastic - toggle error list. Probably should be toggleable.
-        noremap <silent><leader>lo :Errors<CR>
-        noremap <silent><leader>lc :lcl<CR>
+        "noremap <silent><leader>lo :Errors<CR>
+        "noremap <silent><leader>lc :lcl<CR>
 
 
         "  tab settings
@@ -428,6 +450,8 @@ set nocompatible                      " just in case system-wide vimrc has set t
     let g:ctrlp_clear_cache_on_exit = 0
     let g:ctrlp_working_path_mode = 'ra'
     let g:ctrlp_root_markers = ['.root', 'Makefile', '.git' ]
+    nnoremap <silent> <leader>O :ClearCtrlPCache<cr>\|:CtrlP<cr>
+    nnoremap <silent> <leader>o :CtrlP<cr>
 
     " NERDTree
     let g:NERDTreeWinPos = "left"
@@ -439,23 +463,23 @@ set nocompatible                      " just in case system-wide vimrc has set t
     set tags=tags;/
 
     " Pastie - private (simmel's fork of tpope's vim-pastie with help from garno)
-    let g:pastie_private = 1
+    "let g:pastie_private = 1
 
     " SingleCompile
-    call SingleCompile#SetCompilerTemplate('cpp', 'gcc', 'GNU C Compiler',
-        \'g++', '-Wall -Wextra -pedantic -O3 -std=c++0x -o $(FILE_TITLE)$',
-        \'./$(FILE_TITLE)$')
-    call SingleCompile#SetOutfile('cpp', 'gcc', '$(FILE_TITLE)$')
-    call SingleCompile#ChooseCompiler('cpp', 'gcc')
+    "call SingleCompile#SetCompilerTemplate('cpp', 'gcc', 'GNU C Compiler',
+        "\'g++', '-Wall -Wextra -pedantic -O3 -std=c++0x -o $(FILE_TITLE)$',
+        "\'./$(FILE_TITLE)$')
+    "call SingleCompile#SetOutfile('cpp', 'gcc', '$(FILE_TITLE)$')
+    "call SingleCompile#ChooseCompiler('cpp', 'gcc')
 
     " Syntastic - C++11 and relevant files
-    let g:syntastic_cpp_check_header = 1
-    let g:syntastic_cpp_compiler_options = ' -std=c++0x'
-    let g:syntastic_mode_map = { 
-        \ 'mode': 'passive',
-        \ 'active_filetypes': 
-            \ ['c', 'cpp', 'javascript', 'perl', 'python', 'sh'] }
-    
+    "let g:syntastic_cpp_check_header = 1
+    "let g:syntastic_cpp_compiler_options = ' -std=c++0x'
+    "let g:syntastic_mode_map = {
+        "\ 'mode': 'passive',
+        "\ 'active_filetypes':
+            "\ ['c', 'cpp', 'javascript', 'perl', 'python', 'sh'] }
+
     " Automatically remove preview window after autocomplete (mainly for clang_complete)
     autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
     autocmd InsertLeave * if pumvisible() == 0|pclose|endif
@@ -465,3 +489,16 @@ set nocompatible                      " just in case system-wide vimrc has set t
         source $HOME/.vimrc.last
     endif
 """ }}}
+
+" ruby support
+" ------------
+autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2 colorcolumn=79
+
+" python support
+autocmd FileType python setlocal expandtab shiftwidth=4 tabstop=4 colorcolumn=79
+\ formatoptions+=croq softtabstop=4 smartindent
+\ cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+let python_highlight_all=1
+let python_highlight_exceptions=0
+let python_highlight_builtins=0
+
