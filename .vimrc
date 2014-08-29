@@ -40,11 +40,21 @@ set nocompatible                      " just in case system-wide vimrc has set t
     " <Tab> everything!
     Bundle 'ervandew/supertab'
 
+    Bundle 'Yggdroot/LeaderF'
+
+    Bundle 'vim-scripts/DirDo.vim'
+
+    " end ruby syntax the right way
+    Bundle 'tpope/vim-endwise'
+
     " Fuzzy finder (files, mru, etc)
     Bundle 'kien/ctrlp.vim'
 
     " A much better statusline
-    Bundle 'Lokaltog/vim-powerline'
+    "Bundle 'Lokaltog/vim-powerline'
+    Bundle 'bling/vim-airline'
+    let g:airline_theme='dark'
+    let g:airline_powerline_fonts = 1
 
     " Easy... motions... yeah.
     Bundle 'Lokaltog/vim-easymotion'
@@ -60,6 +70,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
 
     " Glorious colorscheme
     Bundle 'nanotech/jellybeans.vim'
+
 
     " Tab list panel
     Bundle 'kien/tabman.vim'
@@ -87,7 +98,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
     Bundle 'vim-scripts/Align'
 
     " Ack my life, space left on the end is intentional
-    Bundle "ack.vim"
+    Bundle "vim-scripts/EasyGrep"
 
     " Simple compile/run binds
     "Bundle 'xuhdev/SingleCompile'
@@ -133,7 +144,10 @@ set nocompatible                      " just in case system-wide vimrc has set t
         highlight Normal ctermbg=NONE               " use terminal background
         highlight nonText ctermbg=NONE              " use terminal background
         autocmd BufNewFile,BufRead *.txt,*.markdown,*.md setlocal ft=markdown colorcolumn=79
+        autocmd BufNewFile,BufRead *.css, *.scss setlocal ft=css colorcolumn=79
+        autocmd BufNewFile,BufRead *.coffee  setlocal ft=javascript colorcolumn=79
         autocmd FileType rst setlocal expandtab shiftwidth=4 tabstop=4 softtabstop=4 colorcolumn=79
+        autocmd FileType css setlocal expandtab shiftwidth=2 tabstop=2 softtabstop=2 colorcolumn=79
     """ }}}
     """ Interface general {{{
         set nocursorcolumn
@@ -162,7 +176,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
             " UTF-8 if your locale is something else.
             " WARNING: this will affect encoding used when editing files!
             "
-            " set encoding=utf-8                    " for Powerline glyphs
+            set encoding=utf-8                    " for Powerline glyphs
         """ }}}
         """ Gvim {{{
             set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 8
@@ -230,7 +244,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
     """ }}}
 """ }}}
 """ Files {{{
-    set autochdir                                   " always use curr. dir.
+    set noautochdir
     set autoread                                    " refresh if changed
     set nobackup                                      " backup curr file
     "set confirm                                     " confirm changed files
@@ -251,12 +265,12 @@ set nocompatible                      " just in case system-wide vimrc has set t
     set expandtab                                   " no real tabs
     set nrformats+=alpha                            " incr/decr letters C-a/-x
     set shiftround                                  " be clever with tabs
-    set shiftwidth=4                                " default 8
+    set shiftwidth=2                                " default 8
     set smartcase                                   " igncase,except capitals
     set smartindent                                 " see autoindent
     set smarttab                                    " tab to 0,4,8 etc.
-    set softtabstop=4                               " "tab" feels like <tab>
-    set tabstop=4                                   " replace <TAB> w/4 spaces
+    set softtabstop=2                               " "tab" feels like <tab>
+    set tabstop=2                                   " replace <TAB> w/4 spaces
     """ Only auto-comment newline for block comments {{{
         au FileType c,cpp setlocal comments -=:// comments +=f://
     """ }}}
@@ -268,7 +282,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
 
 
         " ack.vim
-        nnoremap <leader>a :Ack 
+        nnoremap <leader>a :Ag 
 
         " rails.vim shortcuts
         nnoremap <leader>av :AV<CR>
@@ -451,7 +465,7 @@ set nocompatible                      " just in case system-wide vimrc has set t
     let g:ctrlp_working_path_mode = 'ra'
     let g:ctrlp_root_markers = ['.root', 'Makefile', '.git' ]
     nnoremap <silent> <leader>O :ClearCtrlPCache<cr>\|:CtrlP<cr>
-    nnoremap <silent> <leader>o :CtrlP<cr>
+    nnoremap <silent> <leader>o :Leaderf<cr>
 
     " NERDTree
     let g:NERDTreeWinPos = "left"
